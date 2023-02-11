@@ -27,14 +27,31 @@ h1,p,h2 {
 
 .top-right-container 
 {  
-    position: absolute; 
+    position:absolute ; 
     top: 0;
     left: 65%;
     right: 0;  
     height: 100%;
     background-color: #D35722;  
-}      
+}       
 
+.header-container {   
+  position: relative;
+  top: 9%;  
+  left: 18%;
+  width: 20%; 
+  height: 5; 
+  background-color: transparent; 
+
+}
+.text-header {    
+  display: inline-block;
+  color: #D35722;   
+  font-size: 20px;     
+  padding: 0  10px 0 10px ; 
+  font-weight: bold; 
+  font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+}
 .zigzag {    
     width: 20px; 
     left: -20px; 
@@ -52,12 +69,12 @@ h1,p,h2 {
   position: absolute; 
   left:59%;  
   top:20%;  
-  border-bottom: solid 15px;   
-  background-color: #000000;  
-  padding-left: 3px; 
-  padding-right: 3px;
-  border-radius: 10%;
-  border-color: #000000;
+  /* border-bottom: solid 15px;    */
+  /* background-color: #000000;   */
+  /* padding-left: 3px;  */
+  /* padding-right: 3px; */
+  /* border-radius: 10%; */
+  /* border-color: #000000; */
 
 } 
 
@@ -98,8 +115,19 @@ h1,p,h2 {
 .btn:hover{  
   background-color: #D35722; 
   color: #E5D4C2; 
-}   
+} 
 
+#text-horizontal { 
+  position: absolute; 
+  left : 55%; 
+  top:22%;  
+  font-size: 30px; 
+  font-weight: bold; 
+  color:   #E5D4C2; 
+  writing-mode: vertical-rl; 
+  font-family: 'Segoe UI', Tahoma,Verdana, sans-serif;
+}
+ 
 #secondButton {  
   background-color:  #E5D4C2; 
   margin-top: 15%;
