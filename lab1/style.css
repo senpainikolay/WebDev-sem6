@@ -33,7 +33,31 @@ h1,p,h2 {
     right: 0;  
     height: 100%;
     background-color: #D35722;  
-}       
+}    
+
+
+#bottom-container 
+{  
+    position:relative ; 
+    top: 85%;
+    height: 100%;
+    background-color: #F1BC3F;  
+}  
+
+
+
+#zigzag {  
+  width: 100%; 
+  top: -30px; 
+  height: 30px;
+  position: absolute;
+  content: '';
+  background: linear-gradient(28deg, #F1BC3F 14px, #000000 2px  20px, transparent 0), 
+  linear-gradient(-28deg, #F1BC3F 14px, #000000 2px 20px, transparent 0);
+  background-repeat: repeat-x;
+  background-size: 75px  auto;
+}
+
 
 .header-container {   
   position: relative;
@@ -166,5 +190,32 @@ h1,p,h2 {
   position: absolute;  
   bottom: 10%;
   left: 0;
+}
+ 
+
+/*  FAQ page */ 
+
+#faq-container { 
+  position: absolute;   
+  left:15%;
+  top:10%; 
+  font-size: 50px; 
+  color: #E5D4C2;  
+  width: 35%; 
+  height: 50%;  
+} 
+
+.faq-container-elem { 
+  font-size: 30px; 
+  margin-top: 30px ;  
+  padding-bottom: 10px;
+  border-bottom: solid ;
+} 
+.plus-faq { 
+  position: absolute;
+   right: 1%;
+    bottom: 0;
+      width: 25px; 
+      height: 25px;
 }
 
