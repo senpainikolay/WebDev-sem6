@@ -3,12 +3,14 @@ package main
 import (
 	"bufio"
 	"crypto/tls"
+	"flag"
 	"fmt"
 	"io"
 	"log"
 	"net"
 	"net/url"
 	"strings"
+	"sync"
 
 	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/net/html"
@@ -17,25 +19,24 @@ import (
 var m = initCacheMap()
 
 func main() {
-	fmt.Println(len(m))
-	// urlFlag := flag.String("u", "", "Make a HTTPS request to an URL! kinda must contain :443 :) ")
-	// searchFlag := flag.String("s", "", "Search a string upon google engine!!!")
-	// helpFlag := flag.Bool("h", false, "Show help")
+	urlFlag := flag.String("u", "", "Make a HTTPS request to an URL! kinda must contain :443 :) ")
+	searchFlag := flag.String("s", "", "Search a string upon google engine!!!")
+	helpFlag := flag.Bool("h", false, "Show help")
 
-	// flag.Parse()
-	// if *helpFlag {
-	// 	flag.Usage()
-	// 	return
-	// }
+	flag.Parse()
+	if *helpFlag {
+		flag.Usage()
+		return
+	}
 
-	// if *urlFlag != "" {
-	// 	parseUrl(*urlFlag, false)
-	// }
+	if *urlFlag != "" {
+		parseUrl(*urlFlag, false)
+	}
 
-	// if *searchFlag != "" {
-	// 	searchURL := "https://www.google.com/search?q=" + url.QueryEscape(*searchFlag)
-	// 	parseUrl(searchURL, true)
-	// }
+	if *searchFlag != "" {
+		searchURL := "https://www.google.com/search?q=" + url.QueryEscape(*searchFlag)
+		parseUrl(searchURL, true)
+	}
 }
 
 // Recursive in case of a redirect.
@@ -117,34 +118,48 @@ func parseUrl(urlFlag string, methodFlag bool) {
 
 	conn.Close()
 	if methodFlag {
-		parseLinks(bodyStr)
+		parseLinks(bodyStr, urlFlag)
 	} else {
-		htmlParserForTokenizer(bodyStr)
+		htmlParserForTokenizer(bodyStr, urlFlag)
 	}
 
 }
 
-func parseLinks(bodyStr string) {
+// Since the go query lib is a concurrent one, I had to implement the struct with a mutex to
+type SafeParser struct {
+	mu         sync.Mutex
+	c          int
+	fnStr      string
+	numOfLinks int
+}
+
+func parseLinks(bodyStr string, urlFlag string) {
 	reader := strings.NewReader(bodyStr)
-	c := 0
-	numOfLinks := 10
+	safeRes := SafeParser{c: 0, fnStr: "", numOfLinks: 10}
 
 	doc, err := goquery.NewDocumentFromReader(reader)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
-		if c >= numOfLinks {
-			return
-		}
 		link, exists := s.Attr("href")
 		if exists {
 			title := s.Children()
 
 			if title != nil && link[:4] == "/url" && title.Text() != "" {
-				c += 1
-				fmt.Printf("%v. %s\nLink: %s\n\n", c, title.Text(), link[7:])
+				safeRes.mu.Lock()
+				safeRes.c += 1
+				safeRes.fnStr += fmt.Sprintf("%v. %s\nLink: %s\n\n", safeRes.c, title.Text(), link[7:]) + "\n"
+				if safeRes.c == safeRes.numOfLinks {
+					fmt.Println(safeRes.fnStr)
+					m[urlFlag] = safeRes.fnStr
+					upateJsonCacheWithTheCurrentMap(m)
+					safeRes.mu.Unlock()
+					return
+				}
+				safeRes.mu.Unlock()
+
 			}
 
 		}
@@ -152,9 +167,15 @@ func parseLinks(bodyStr string) {
 
 }
 
-func htmlParserForTokenizer(bodyStr string) {
+type SafePageParser struct {
+	mu    sync.Mutex
+	fnStr string
+}
+
+func htmlParserForTokenizer(bodyStr string, urlFlag string) {
 	reader := strings.NewReader(bodyStr)
 	tokenizer := html.NewTokenizer(reader)
+	safeRes := SafePageParser{fnStr: ""}
 	for {
 		tokenType := tokenizer.Next()
 		if tokenType == html.ErrorToken {
@@ -162,7 +183,7 @@ func htmlParserForTokenizer(bodyStr string) {
 			panic(err)
 		}
 		if tokenType == html.TextToken {
-			fmt.Println("\n\n>>>>> Response Headers:\n\n" + string(tokenizer.Text()))
+			fmt.Printf("\n\n>>>>> Response Headers:\n\n" + string(tokenizer.Text()))
 			break
 		}
 
@@ -176,9 +197,16 @@ func htmlParserForTokenizer(bodyStr string) {
 	fmt.Println(">>>>> Paragraphs: \n ")
 	// P attributes parsing
 	doc.Find("p").Each(func(i int, s *goquery.Selection) {
-		if s.Text() != " " || s.Text() != "" {
-			fmt.Printf(">> %s \n", s.Text())
+		if s.Text() != " " && s.Text() != "" {
+			safeRes.mu.Lock()
+			safeRes.fnStr += fmt.Sprintf(">> %s \n", s.Text())
+			safeRes.mu.Unlock()
 		}
 	})
+	safeRes.mu.Lock()
+	fmt.Println(safeRes.fnStr)
+	m[urlFlag] = safeRes.fnStr
+	upateJsonCacheWithTheCurrentMap(m)
+	safeRes.mu.Unlock()
 
 }

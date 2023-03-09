@@ -45,7 +45,7 @@ func initCacheMap() map[string]string {
 	return m
 }
 
-func saveJson(m map[string]string) {
+func upateJsonCacheWithTheCurrentMap(m map[string]string) {
 	var cacheMap CacheMap
 	for key, val := range m {
 		cacheMap.Links = append(cacheMap.Links, CacheUnit{Link: key, Result: val})
