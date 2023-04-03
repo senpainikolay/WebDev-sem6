@@ -3,22 +3,23 @@
 const formInputOnAddingNewItem = document.getElementById('newItem'); 
 const addBtn = document.getElementById('addButton'); 
 
-
-let toDoList = [];   
-try {
-  var jsonString = localStorage.getItem('webItemList'); 
+let toDoList = [];    
+try { 
+  var jsonString = localStorage.getItem('webItemList');  
+  if (jsonString != null) { 
   toDoList  = JSON.parse(jsonString);   
+  } else {  
+    localStorage.setItem('webItemList', JSON.stringify(toDoList)); 
+  }
   renderList() 
-} finally {
-  //pass   
+} finally {   
+  // pass  
 } 
 
 
 
-
-
 // Render The Array with HTML elements
-function renderList() {     
+function renderList() {   
     cleanItemsList() 
     for (let i = 0; i < toDoList.length; i++) { 
         renderOneListItem(toDoList[i].text,i, toDoList[i].doneCheck)
