@@ -1,0 +1,19 @@
+.App {
+  text-align: center;
+} 
+
+body {   
+  background: #eee; 
+  background-image: url("https://www.transparenttextures.com/patterns/gplay.png");
+}
+
+
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
