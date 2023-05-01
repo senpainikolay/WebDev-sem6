@@ -3,8 +3,13 @@ export interface GetUserResponse {
     surname: string;
     id: number;
   } 
-  export interface LoginRequest {
+  export interface LoginSignUpRequest {
     name:  string;
     surname: string ;
+  }  
+
+  export interface SignUpRequest {
+    data:  LoginSignUpRequest; 
   } 
+ 
  

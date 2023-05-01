@@ -4,7 +4,10 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from './context/authContext';  
+import { AuthProvider } from './context/authContext';   
+import { ToastContainer } from 'react-toastify'; 
+import 'tachyons/css/tachyons.min.css';
+
 
 
 
@@ -15,7 +18,8 @@ root.render(
   <React.StrictMode> 
   <BrowserRouter>
     <AuthProvider>
-      <App />
+      <App /> 
+      <ToastContainer />
     </AuthProvider>
   </BrowserRouter>
 </React.StrictMode>

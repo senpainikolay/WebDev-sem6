@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import SignInForm from "../components/SignInForm";
 import useAuth from '../hooks/useAuth'; 
 import { UserService } from '../services/UserService';
-import { LoginRequest } from '../models/User';
+import { LoginSignUpRequest } from '../models/User';
 import { SESSION_TOKEN } from '../services/AuthorizedApi';
 import ErrorProne from '../components/ErrorProne';
 import { useState } from 'react';
@@ -17,7 +17,7 @@ export const SignInAccount = () => {
 
   return (
     <div>
-      <SignInForm submitCallback={async  (loginRequest: LoginRequest) => {
+      <SignInForm submitCallback={async  (loginRequest: LoginSignUpRequest) => {
         await  userService.login(loginRequest);  
         if (Boolean(window.sessionStorage.getItem(SESSION_TOKEN)) === true) { 
           setAuth({ isLoggedIn: true }); 

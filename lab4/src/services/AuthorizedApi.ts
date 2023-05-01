@@ -6,7 +6,7 @@ export const SESSION_TOKEN = "USER_APP_ID";
 class AuthorizedApi {
       getInstance = async (): Promise<AxiosInstance> => {
       const axiosInstance = axios.create({ baseURL: BASE_URL });
-      axiosInstance.defaults.headers.common['X-Access-Token'] = `${ACCESS_TOKEN}`; 
+      axiosInstance.defaults.headers.common['X-Access-Token'] = `${ACCESS_TOKEN}`;   
       return axiosInstance;
     };
   }

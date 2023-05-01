@@ -1,24 +1,24 @@
-import React, { useState } from "react"; 
+import React, { useState } from "react";  
 import { Link } from 'react-router-dom'
 
-interface SignInProps  { 
-  submitCallback: (loginRequest: any) => void;
+interface SignUpProps  { 
+  submitCallback: (signUpRequest: any) => void;
 };
 
-const SignInAccount: React.FC<SignInProps> = (props) => {
+const SignUpAccount: React.FC<SignUpProps> = (props) => {
   const  [name, setName] = useState("");
   const [surname, setSurname] = useState("");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); 
-    props.submitCallback({name: name, surname: surname});
+    props.submitCallback({data: {name: name, surname: surname}});
   };
 
   return (
     <div className="flex justify-center  items-center vh-100 h-100">
     <form className="measure center  pa5  shadow-5 " onSubmit={handleSubmit}>
       <fieldset className="ba b--transparent ph0 mh0 ">
-        <legend className="f4 fw6 ph0 mh0">Sign In</legend>
+        <legend className="f4 fw6 ph0 mh0">Sign Up</legend>
         <div className="mv3">
           <label className="db fw6 lh-copy f6" >
             Name
@@ -51,14 +51,13 @@ const SignInAccount: React.FC<SignInProps> = (props) => {
           className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer  "
           type="submit"
         >
-          Sign In
+          Sign Up 
         </button>   
-        <br></br>
         <Link
-        to="/signup"
-        className="b pv3 grow b--black  db black   "
+        to="/signin"
+        className="b  black ph5 pointer grow   "
          >
-        Don't have an account? Sign Up!
+        Sign In
       </Link>
       </div>
     </form>
@@ -66,4 +65,4 @@ const SignInAccount: React.FC<SignInProps> = (props) => {
 );
 };
 
-export default SignInAccount;
+export default SignUpAccount;
