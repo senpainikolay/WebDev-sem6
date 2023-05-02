@@ -16,7 +16,7 @@ export const Quiz = () => {
   const [quiz, setQuizz] = useState<GetQuizResponse | undefined>();   
   const [notFoundQuiz, setNotFoundQuiz] = useState(false); 
   const [isScorePromptOpen, setScorePropmpOpen] = useState(false); 
-  const [scoreMessage, setScoreMessage] = useState("");
+  const [scores, setScores] = useState<number[]>([]);
 
 
   const getQuiz = async () => {
@@ -30,9 +30,9 @@ export const Quiz = () => {
     }, [])  
 
 
-    const showScoreMessage = (score:string) => {  
+    const showScoreMessage = (score:number,outScore:number) => {  
       setScorePropmpOpen(true); 
-      setScoreMessage(score);
+      setScores([score,outScore]);
     } 
 
     const handleClose = () => { 
@@ -44,7 +44,7 @@ export const Quiz = () => {
     return ( 
       <div> 
         { quiz && <QuizForm id={quiz.id} name={quiz.title} questions={quiz.questions}   key={quiz.id} finalScoreCallback={showScoreMessage} /> } 
-        { isScorePromptOpen &&  <Score message={scoreMessage} onClose={handleClose} /> } 
+        { isScorePromptOpen &&  <Score score={scores[0]} totalCount={scores[1]} onClose={handleClose} /> } 
         { notFoundQuiz && <h1> Not existing quiz.</h1>}  
       </div>
        

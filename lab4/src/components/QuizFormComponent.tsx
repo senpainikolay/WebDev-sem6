@@ -13,7 +13,7 @@ interface QuizProps {
   id: number;
   name: string; 
   questions: Question[];    
-  finalScoreCallback:(finalScore:string) => void; 
+  finalScoreCallback:(score:number, outScore:number) => void; 
 
 } 
 
@@ -37,8 +37,7 @@ const QuizForm = (props:QuizProps ) => {
   useEffect(() => { 
     if(submitResponse.length === props.questions.length) {  
       const filteredResponses =  submitResponse.filter( sr => sr.correct === true )  
-      const finalScoreString = `${filteredResponses.length} out of ${props.questions.length}`
-      props.finalScoreCallback(finalScoreString)  
+      props.finalScoreCallback(filteredResponses.length, props.questions.length )  
     }
   }, [submitResponse]);  
 
