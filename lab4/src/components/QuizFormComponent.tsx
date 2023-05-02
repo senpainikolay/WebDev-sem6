@@ -1,28 +1,66 @@
-
+import { useNavigate } from 'react-router-dom';
 import {useState} from 'react' 
-import {Question} from '../models/Quiz'
+import {Question} from '../models/Quiz' 
+import { useEffect } from 'react';
 import QuestionComponent from './QuestionComponent';
-import { showErrorMessage, showSuccessMessage } from '../utils/toast';
+import { showErrorMessage, showSuccessMessage } from '../utils/toast'; 
+import { QuizService } from "../services/QuizService"; 
+import { SESSION_TOKEN } from '../services/AuthorizedApi'; 
+import {SubmitQuestionResponse} from '../models/Quiz'
+
 
 interface QuizProps { 
   id: number;
   name: string; 
-  questions: Question[];  
+  questions: Question[];    
+  finalScoreCallback:(finalScore:string) => void; 
+
 } 
 
+const  quizService = new QuizService(); 
+
 const QuizForm = (props:QuizProps ) => {    
-    const questionAnswerMap = new Map<number, string | undefined >();
+    const navigate = useNavigate();
+    const [answers, setAnswers] = useState<Map<number, string>>(new Map());
+    const [submitResponse, setSubmitResponse] = useState<SubmitQuestionResponse[]>([]);  
+    const [errorHandler, setErrorHandler] = useState(true);
+  
+    const updateAnswerSelected = (questionId: number, answer: string) => {
+      setAnswers((prevAnswers) => new Map(prevAnswers).set(questionId, answer));
+    };
+
+    const handleButtonClick = () => {  
+       props.questions.length != answers.size ? showErrorMessage("Not all questions are selected!") : handleSuccesfulSubmit()
+    };  
+
     
-    const updateAnswerSelected = (questionId:number, answer:string) => {
-        questionAnswerMap.set(questionId, answer );  
-      }; 
-
-    const handleButtonClick = () => { 
-       props.questions.length != questionAnswerMap.size ? showErrorMessage("Not all questions are selected!") : showSuccessMessage("Submitted") 
-    }; 
-
-    const handle = () => {  
+  useEffect(() => { 
+    if(submitResponse.length === props.questions.length) {  
+      const filteredResponses =  submitResponse.filter( sr => sr.correct === true )  
+      const finalScoreString = `${filteredResponses.length} out of ${props.questions.length}`
+      props.finalScoreCallback(finalScoreString)  
     }
+  }, [submitResponse]);  
+
+  useEffect(() => { 
+    if (errorHandler === false) { 
+    showErrorMessage("Some of the quiz's questions already submitted!");
+    navigate("/quizzes")  
+    } 
+  }, [errorHandler]); 
+
+
+
+    const  handleSuccesfulSubmit = () =>  {   
+     const userId = Number(window.sessionStorage.getItem(SESSION_TOKEN));
+      answers.forEach((value: string, key: number) => {
+        errorHandler && 
+         quizService
+          .submit({data:{question_id:key,answer:value,user_id:userId}}, props.id)
+          .then(newVal => setSubmitResponse( prevResponses => [...prevResponses, newVal]))
+          .catch(() => { setErrorHandler(false); }) 
+        }); 
+    } 
 
 
   return (
