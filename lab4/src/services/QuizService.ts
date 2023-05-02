@@ -18,7 +18,15 @@ export class QuizService extends AuthorizedApi {
     return instance
       .get(BASE_URL + `v54/quizzes/${quizId}`)
       .then((response) => response.data as GetQuizResponse);     
-  };
+  };  
+
+  public submit = async (quizId: number): Promise<GetQuizResponse> => {
+    const instance = await this.getInstance();
+    return instance
+      .get(BASE_URL + `v54/quizzes/${quizId}`)
+      .then((response) => response.data as GetQuizResponse);     
+  }; 
+  
 
 
 }
