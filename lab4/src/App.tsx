@@ -19,7 +19,7 @@ function App() {
           <Route path="/SignUp" element={<SignUpAccount></SignUpAccount>} />
 
       </Route>
-      <Route element={<RequireAuth />}> 
+      <Route element={<RequireAuth />}>  
          <Route path="/quizzes" element={<Quizzes />} />  
          <Route path="/quizzes/:id" element={<Quiz />} />
          <Route path="/" element={<Home></Home>} />

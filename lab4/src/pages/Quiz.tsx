@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import Score from "../components/ScoreShowPrompt"
 
 
-
 const quizService = new QuizService(); 
  
 export const Quiz = () => {    
