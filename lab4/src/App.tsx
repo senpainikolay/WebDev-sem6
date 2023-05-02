@@ -6,7 +6,9 @@ import {Home} from './pages/Home'
 import {RequireAuth} from './components/RequireAuth' 
 import {RequireNoAuth} from './components/RequireNoAuth' 
 import 'tachyons'
-import { Quizzes } from './pages/Quizzes';
+import { Quizzes } from './pages/Quizzes'; 
+import { Quiz } from './pages/Quiz';
+
 
 
 function App() {
@@ -18,7 +20,8 @@ function App() {
 
       </Route>
       <Route element={<RequireAuth />}> 
-         <Route path="/quizzes" element={<Quizzes />} />
+         <Route path="/quizzes" element={<Quizzes />} />  
+         <Route path="/quizzes/:id" element={<Quiz />} />
          <Route path="/" element={<Home></Home>} />
       </Route>
     </Routes> 

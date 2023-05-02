@@ -4,9 +4,9 @@ import {useState, useEffect } from 'react'
 import {GetQuizzesResponse} from '../models/Quiz' 
 
 
+const quizService = new QuizService(); 
 
 export const Quizzes = () => {    
-  const quizService = new QuizService(); 
   const [quizzes, setQuizzes] = useState<GetQuizzesResponse[]>([]);  
 
   const getQuizzes = async () => {
@@ -28,6 +28,7 @@ export const Quizzes = () => {
            quizzes.length > 0 && 
            quizzes.map( quiz => 
             <QuizCard 
+                id = {quiz.id}
                 name={quiz.title} 
                 numberOfQuestions={quiz.questions_count} 
                 key={quiz.id}
