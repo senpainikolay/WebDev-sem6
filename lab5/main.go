@@ -54,16 +54,20 @@ func whichCmd(msg mdls.Message) {
 	case "/start":
 		txt := fmt.Sprintf("Hello there %s :))))", msg.From.FirstName)
 		go sendToBot(txt, msg.Chat.ID)
-	case "a":
+	case "/latest_news":
 		if len(stringArr) > 1 {
 			fetchNews(stringArr[1], msg.Chat.ID)
 		} else {
 			fetchNews("", msg.Chat.ID)
 		}
-	// case "/save_news":
-	// 	return "save news lol"
-	// case "/saved_news":
-	// 	return "keekk lol"
+	case "/save_news":
+		if len(stringArr) > 1 {
+			go InsertIntoDb(msg.From.ID, stringArr[1], msg.Chat.ID)
+		} else {
+			go sendToBot("the link was not provided", msg.Chat.ID)
+		}
+	case "/saved_news":
+		GetLinksPerUserId(msg.From.ID, msg.Chat.ID)
 	default:
 		go sendToBot("Invalid command!", msg.Chat.ID)
 	}
